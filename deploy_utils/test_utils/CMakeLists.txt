@@ -12,21 +12,27 @@ set(source_file
     src/sam_test_utils.cpp
     src/stereo_matching_test_utils.cpp
 )
-
-include_directories(
-  include
-  ${OpenCV_INCLUDE_DIRS}
-)
-
 add_library(${PROJECT_NAME} SHARED ${source_file})
-
 target_link_libraries(${PROJECT_NAME} PUBLIC
   ${OpenCV_LIBS}
   deploy_core
   common_utils
 )
 
-install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION lib)
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+    "$<INSTALL_INTERFACE:include/${PACKAGE_NAME}>"
+    "${OpenCV_INCLUDE_DIRS}"
+)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+install(TARGETS ${PROJECT_NAME}
+        EXPORT ${PACKAGE_NAME}Targets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
+
+install(DIRECTORY include/
+  DESTINATION include/${PACKAGE_NAME}
+)

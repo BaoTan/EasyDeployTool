@@ -26,17 +26,34 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME} SHARED ${source_file})
-
-
 target_link_libraries(${PROJECT_NAME} PUBLIC
+  deploy_core
+)
+target_link_libraries(${PROJECT_NAME} PRIVATE
   ${CUDA_LIBRARIES}
   nvinfer
   nvonnxparser
   nvinfer_plugin
-  deploy_core
+)
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+    "$<INSTALL_INTERFACE:include/${PACKAGE_NAME}>"
+)
+target_include_directories(${PROJECT_NAME}
+  PRIVATE
+    "${ONNXRUNTIME_INCLUDE_DIRS}"
 )
 
 install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION lib)
+        EXPORT ${PACKAGE_NAME}Targets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+install(DIRECTORY include/
+  DESTINATION include/${PACKAGE_NAME}
+)
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_ORT)

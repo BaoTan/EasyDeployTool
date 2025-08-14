@@ -9,17 +9,27 @@ set(source_file src/rknn_core.cpp
                 src/rknn_core_factory.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${source_file})
-
-include_directories(
-  include
-)
-
 target_link_libraries(${PROJECT_NAME} PUBLIC
   deploy_core
+)
+target_link_libraries(${PROJECT_NAME} PRIVATE
   rknnrt
+)
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+    "$<INSTALL_INTERFACE:include/${PACKAGE_NAME}>"
 )
 
 install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION lib)
+        EXPORT ${PACKAGE_NAME}Targets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+install(DIRECTORY include/
+  DESTINATION include/${PACKAGE_NAME}
+)
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_RKNN)

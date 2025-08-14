@@ -14,22 +14,29 @@ set(source_file
     src/sam_benchmark_utils.cpp
     src/stereo_matching_benchmark_utils.cpp
 )
-
-include_directories(
-  include
-  ${OpenCV_INCLUDE_DIRS}
-)
-
 add_library(${PROJECT_NAME} SHARED ${source_file})
-
 target_link_libraries(${PROJECT_NAME} PUBLIC
-  benchmark::benchmark
-  glog::glog
   ${OpenCV_LIBS}
   deploy_core
 )
+target_link_libraries(${PROJECT_NAME} PRIVATE
+  benchmark::benchmark
+  glog::glog
+)
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+    "$<INSTALL_INTERFACE:include/${PACKAGE_NAME}>"
+    "${OpenCV_INCLUDE_DIRS}"
+)
 
 install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION lib)
+        EXPORT ${PACKAGE_NAME}Targets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+install(DIRECTORY include/
+  DESTINATION include/${PACKAGE_NAME}
+)

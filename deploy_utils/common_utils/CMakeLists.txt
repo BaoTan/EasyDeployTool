@@ -8,20 +8,25 @@ set(CMAKE_CXX_STANDARD 17)
 set(source_file
   src/log.cpp
 )
-
-include_directories(
-  include
-)
-
 add_library(${PROJECT_NAME} SHARED ${source_file})
-
 target_link_libraries(${PROJECT_NAME} PUBLIC
+)
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+    "$<INSTALL_INTERFACE:include/${PACKAGE_NAME}>"
 )
 
 install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION lib)
+        EXPORT ${PACKAGE_NAME}Targets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+install(DIRECTORY include/
+  DESTINATION include/${PACKAGE_NAME}
+)
 
 if (ENABLE_DEBUG_OUTPUT)
   target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_DEBUG_OUTPUT)

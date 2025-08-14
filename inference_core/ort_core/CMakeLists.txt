@@ -24,20 +24,32 @@ set(source_file
   src/ort_core.cpp
   src/ort_core_factory.cpp
 )
-
-include_directories(
-  include
-  ${ONNXRUNTIME_INCLUDE_DIRS}
-)
-
 add_library(${PROJECT_NAME} SHARED ${source_file})
-
 target_link_libraries(${PROJECT_NAME} PUBLIC
-  ${ONNXRUNTIME_LIBS}
   deploy_core
+)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+  ${ONNXRUNTIME_LIBS}
+)
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+    "$<INSTALL_INTERFACE:include/${PACKAGE_NAME}>"
+)
+target_include_directories(${PROJECT_NAME}
+  PRIVATE
+    "${ONNXRUNTIME_INCLUDE_DIRS}"
 )
 
 install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION lib)
+        EXPORT ${PACKAGE_NAME}Targets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+install(DIRECTORY include/
+  DESTINATION include/${PACKAGE_NAME}
+)
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_ORT)
