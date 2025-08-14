@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(easy_deploy_tool VERSION 1.2.3)
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+project(easy_deploy_tool VERSION 2.0.0)
 
 add_subdirectory(deploy_core)
 add_subdirectory(deploy_utils)
