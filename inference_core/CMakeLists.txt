@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.8)
-project(inference_core)
-
 if (ENABLE_ORT)
   add_subdirectory(ort_core)
 endif()

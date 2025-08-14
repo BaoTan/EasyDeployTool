@@ -1,16 +1,8 @@
-cmake_minimum_required(VERSION 3.8)
-project(image_processing_utils)
-
 add_compile_options(-std=c++17)
-add_compile_options(-O3)
+add_compile_options(-O3 -Wextra -Wdeprecated -fPIC)
 set(CMAKE_CXX_STANDARD 17)
 
-if(ENABLE_TENSORRT)
-  find_package(CUDA REQUIRED)
-  set(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc)
-  enable_language(CUDA)
-  include_directories(${CUDA_INCLUDE_DIRS})
-endif()
+set(MODULE_NAME image_processing_utils)
 
 find_package(OpenCV REQUIRED)
 
@@ -29,25 +21,25 @@ if(ENABLE_TENSORRT)
   )
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${source_file})
-target_link_libraries(${PROJECT_NAME} PUBLIC
+add_library(${MODULE_NAME} SHARED ${source_file})
+target_link_libraries(${MODULE_NAME} PUBLIC
   ${OpenCV_LIBS}
   deploy_core
 )
-target_include_directories(${PROJECT_NAME}
+target_include_directories(${MODULE_NAME}
   PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>"
-    "$<INSTALL_INTERFACE:include/${PACKAGE_NAME}>"
+    "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
     "${OpenCV_INCLUDE_DIRS}"
 )
 
-install(TARGETS ${PROJECT_NAME}
-        EXPORT ${PACKAGE_NAME}Targets
+install(TARGETS ${MODULE_NAME}
+        EXPORT ${PROJECT_NAME}Targets
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin)
 
 install(DIRECTORY include/
-  DESTINATION include/${PACKAGE_NAME}
+  DESTINATION include/${PROJECT_NAME}
 )
