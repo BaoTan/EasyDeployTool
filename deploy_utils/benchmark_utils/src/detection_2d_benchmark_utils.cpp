@@ -13,7 +13,7 @@ void benchmark_detection_2d_sync(benchmark::State                          &stat
   // 基准测试主循环
   for (auto _ : state)
   {
-    for (size_t i = 0; i < state.range(0); ++i)
+    for (int64_t i = 0; i < state.range(0); ++i)
     {
       std::vector<BBox2D> det_results;
       model->Detect(dummy_input.clone(), det_results, 0.4, false);
@@ -32,7 +32,7 @@ void benchmark_detection_2d_async(benchmark::State                          &sta
   for (auto _ : state)
   {
     std::vector<std::future<std::vector<BBox2D>>> futs;
-    for (size_t i = 0; i < state.range(0); ++i)
+    for (int64_t i = 0; i < state.range(0); ++i)
     {
       auto fut = model->DetectAsync(dummy_input.clone(), 0.4, false, false);
       CHECK(fut.valid());

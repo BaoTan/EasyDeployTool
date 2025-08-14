@@ -12,7 +12,7 @@ void benchmark_sam_sync(benchmark::State &state, const std::shared_ptr<BaseSamMo
   // 基准测试主循环
   for (auto _ : state)
   {
-    for (size_t i = 0; i < state.range(0); ++i)
+    for (int64_t i = 0; i < state.range(0); ++i)
     {
       cv::Mat masks;
       CHECK(model->GenerateMask(dummy_input.clone(), {{200, 200}}, {1}, masks, false));
@@ -30,7 +30,7 @@ void benchmark_sam_async(benchmark::State &state, const std::shared_ptr<BaseSamM
   for (auto _ : state)
   {
     std::vector<std::future<cv::Mat>> futs;
-    for (size_t i = 0; i < state.range(0); ++i)
+    for (int64_t i = 0; i < state.range(0); ++i)
     {
       auto fut = model->GenerateMaskAsync(dummy_input.clone(), {{200, 200}}, {1}, false, false);
       CHECK(fut.valid());

@@ -13,7 +13,7 @@ void benchmark_stereo_matching_sync(benchmark::State                            
   // 基准测试主循环
   for (auto _ : state)
   {
-    for (size_t i = 0; i < state.range(0); ++i)
+    for (int64_t i = 0; i < state.range(0); ++i)
     {
       cv::Mat disp;
       CHECK(model->ComputeDisp(dummy_input, dummy_input, disp));
@@ -32,7 +32,7 @@ void benchmark_stereo_matching_async(benchmark::State                           
   for (auto _ : state)
   {
     std::vector<std::future<cv::Mat>> futs;
-    for (size_t i = 0; i < state.range(0); ++i)
+    for (int64_t i = 0; i < state.range(0); ++i)
     {
       auto fut = model->ComputeDispAsync(dummy_input.clone(), dummy_input.clone());
       CHECK(fut.valid());
