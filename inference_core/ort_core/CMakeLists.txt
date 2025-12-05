@@ -7,9 +7,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-  message(STATUS "Building OnnxRuntime-Core on x86_64 platform ...")
-  set(ONNXRUNTIME_INCLUDE_DIRS onnxruntime-pkg-x86/include)
-  FILE(GLOB ONNXRUNTIME_LIBS onnxruntime-pkg-x86/lib/*.so)
+  # ONNXRUNTIME lib
+  MESSAGE(STATUS "Building OnnxRuntime-Core on x86_64 platform ...")
+  SET(ONNX_ROOT_PATH /home/paco/work_envs/dl_env/onnxruntime-linux-x64-gpu-1.16.0)
+  SET(ONNXRUNTIME_INCLUDE_DIRS ${ONNX_ROOT_PATH}/include)
+  FILE(GLOB ONNXRUNTIME_LIBS ${ONNX_ROOT_PATH}/lib/*.so)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
   message(STATUS "Building OnnxRuntime-Core on aarch64 platform ...")
   set(ONNXRUNTIME_INCLUDE_DIRS onnxruntime-pkg-aarch64/include)
