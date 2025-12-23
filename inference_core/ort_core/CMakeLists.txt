@@ -21,6 +21,7 @@ else()
                       Supported architectures are x86_64 and aarch64.")
 endif()
 
+message(ONNXRUNTIME_INCLUDE_DIRS = ${ONNXRUNTIME_INCLUDE_DIRS})
 
 set(source_file
   src/ort_core.cpp
