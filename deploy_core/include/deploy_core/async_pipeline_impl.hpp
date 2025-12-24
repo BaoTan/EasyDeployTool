@@ -276,7 +276,7 @@ private:
                   std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
       } catch (const std::exception &e)
       {
-        LOG_ERROR(
+        DP_LOG_ERROR(
             "[AsyncPipelineInstance] {%s}, excute block function failed! Got exception : %s, Drop "
             "package.",
             pipeline_block.GetName().c_str(), e.what());
@@ -312,7 +312,7 @@ private:
         inner_pack->callback(inner_pack->package);
       } else
       {
-        LOG_WARN(
+        DP_LOG_WARN(
             "[AsyncPipelineInstance] {Output} package without valid callback will be dropped!!!");
       }
     }

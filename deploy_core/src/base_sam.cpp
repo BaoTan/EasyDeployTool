@@ -19,15 +19,15 @@ static bool CheckValidArguments(const cv::Mat                          &image,
 {
   if (image.empty())
   {
-    LOG_ERROR("[BaseSamModel] Got empty image!!!");
+    DP_LOG_ERROR("[BaseSamModel] Got empty image!!!");
     return false;
   } else if (infer_core == nullptr)
   {
-    LOG_ERROR("[BaseSamModel] Infer_core with points as prompt is null!!!");
+    DP_LOG_ERROR("[BaseSamModel] Infer_core with points as prompt is null!!!");
     return false;
   } else if (points.size() != labels.size() || points.size() < 1)
   {
-    LOG_ERROR(
+    DP_LOG_ERROR(
         "[BaseSamModel] points/labels size is not valid!!! points.size: %ld, labels.size: %ld",
         points.size(), labels.size());
     return false;
@@ -49,19 +49,19 @@ static bool CheckValidArguments(const cv::Mat                        &image,
 {
   if (image.empty())
   {
-    LOG_ERROR("[BaseSamModel] Got empty image!!!");
+    DP_LOG_ERROR("[BaseSamModel] Got empty image!!!");
     return false;
   } else if (infer_core == nullptr)
   {
-    LOG_ERROR("[BaseSamModel] Infer_core with boxes as prompt is null!!!");
+    DP_LOG_ERROR("[BaseSamModel] Infer_core with boxes as prompt is null!!!");
     return false;
   } else if (boxes.size() < 1)
   {
-    LOG_ERROR("[BaseSamModel] boxes size is not valid!!! boxes.size: %ld", boxes.size());
+    DP_LOG_ERROR("[BaseSamModel] boxes size is not valid!!! boxes.size: %ld", boxes.size());
     return false;
   } else if (boxes.size() > 1)
   {
-    LOG_WARN("[BaseSamModel] More than one boxes is not support in sam model!!");
+    DP_LOG_WARN("[BaseSamModel] More than one boxes is not support in sam model!!");
   }
 
   return true;
@@ -255,12 +255,12 @@ std::future<cv::Mat> BaseSamModel::GenerateMaskAsync(const cv::Mat              
   // 0. Check
   if (!CheckValidArguments(image, mask_points_decoder_core_, points, labels))
   {
-    LOG_ERROR("[BaseSamModel] `GenerateMask` with points got invalid arguments");
+    DP_LOG_ERROR("[BaseSamModel] `GenerateMask` with points got invalid arguments");
     return std::future<cv::Mat>();
   }
   if (!BaseAsyncPipeline::IsPipelineInitialized(point_pipeline_name_))
   {
-    LOG_ERROR("[BaseSamModel] Async pipeline with points as prompt is not initialized yet!!!");
+    DP_LOG_ERROR("[BaseSamModel] Async pipeline with points as prompt is not initialized yet!!!");
     return std::future<cv::Mat>();
   }
 
@@ -288,13 +288,13 @@ std::future<cv::Mat> BaseSamModel::GenerateMaskAsync(const cv::Mat             &
   // 0. check
   if (!CheckValidArguments(image, mask_boxes_decoder_core_, boxes))
   {
-    LOG_ERROR("[BaseSamModel] `GenerateMask` with boxes got invalid arguments");
+    DP_LOG_ERROR("[BaseSamModel] `GenerateMask` with boxes got invalid arguments");
     return std::future<cv::Mat>();
   }
 
   if (!BaseAsyncPipeline::IsPipelineInitialized(box_pipeline_name_))
   {
-    LOG_ERROR("[BaseSamModel] Async pipeline with boxes as prompt is not initialized yet!!!");
+    DP_LOG_ERROR("[BaseSamModel] Async pipeline with boxes as prompt is not initialized yet!!!");
     return std::future<cv::Mat>();
   }
 

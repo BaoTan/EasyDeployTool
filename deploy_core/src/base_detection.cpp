@@ -63,7 +63,7 @@ bool BaseDetectionModel::Detect(const cv::Mat       &input_image,
   auto blobs_tensor = infer_core_->GetBuffer(false);
   if (blobs_tensor == nullptr)
   {
-    LOG_ERROR("[BaseDetectionModel] Inference Core run out buffer!!!");
+    DP_LOG_ERROR("[BaseDetectionModel] Inference Core run out buffer!!!");
     return false;
   }
 
@@ -96,7 +96,7 @@ std::future<std::vector<BBox2D>> BaseDetectionModel::DetectAsync(const cv::Mat &
   // 1. check if the pipeline is initialized
   if (!IsPipelineInitialized(detection_pipeline_name_))
   {
-    LOG_ERROR("[BaseDetectionModel] Async Pipeline is not init yet!!!");
+    DP_LOG_ERROR("[BaseDetectionModel] Async Pipeline is not init yet!!!");
     return std::future<std::vector<BBox2D>>();
   }
 
@@ -104,7 +104,7 @@ std::future<std::vector<BBox2D>> BaseDetectionModel::DetectAsync(const cv::Mat &
   auto blob_buffers = infer_core_->GetBuffer(true);
   if (blob_buffers == nullptr)
   {
-    LOG_ERROR("[BaseDetectionModel] Failed to get buffer from inference core!!!");
+    DP_LOG_ERROR("[BaseDetectionModel] Failed to get buffer from inference core!!!");
     return std::future<std::vector<BBox2D>>();
   }
 

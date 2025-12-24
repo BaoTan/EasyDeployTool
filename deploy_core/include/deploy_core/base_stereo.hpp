@@ -40,7 +40,7 @@ public:
     auto stereo_package = std::dynamic_pointer_cast<StereoPipelinePackage>(package);
     if (stereo_package == nullptr)
     {
-      LOG_ERROR("[StereoGenResultType] Got INVALID package ptr!!!");
+      DP_LOG_ERROR("[StereoGenResultType] Got INVALID package ptr!!!");
       return {};
     }
     return std::move(stereo_package->disp);
@@ -103,7 +103,7 @@ public:
     auto stereo_package = std::dynamic_pointer_cast<MonoStereoPipelinePackage>(package);
     if (stereo_package == nullptr)
     {
-      LOG_ERROR("[MonoStereoGenResultType] Got INVALID package ptr!!!");
+      DP_LOG_ERROR("[MonoStereoGenResultType] Got INVALID package ptr!!!");
       return {};
     }
     return std::move(stereo_package->depth);

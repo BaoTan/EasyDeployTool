@@ -23,9 +23,9 @@ public:
     if (severity == Severity::kINFO)
       LOG_DEBUG("[Tensorrt] : %s", msg);
     else if (severity == Severity::kERROR)
-      LOG_ERROR("[Tensorrt] : %s", msg);
+      DP_LOG_ERROR("[Tensorrt] : %s", msg);
     else if (severity == Severity::kWARNING)
-      LOG_WARN("[Tensorrt] : %s", msg);
+      DP_LOG_WARN("[Tensorrt] : %s", msg);
   }
 };
 

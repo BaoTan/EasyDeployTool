@@ -24,7 +24,7 @@ public:
   {
     if (!is_running)
     {
-      LOG_ERROR("Please call Start() before counting.");
+      DP_LOG_ERROR("Please call Start() before counting.");
       return;
     }
     sum += i;
@@ -35,7 +35,7 @@ public:
   {
     if (!is_running)
     {
-      LOG_ERROR("Please call Start() before calculating FPS.");
+      DP_LOG_ERROR("Please call Start() before calculating FPS.");
       return 0.0;
     }
 

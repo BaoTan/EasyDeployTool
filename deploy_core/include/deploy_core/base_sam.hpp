@@ -114,7 +114,7 @@ public:
     auto sam_package = std::dynamic_pointer_cast<SamPipelinePackage>(package);
     if (sam_package == nullptr)
     {
-      LOG_ERROR("[SamGenResultType] Got INVALID package ptr!!!");
+      DP_LOG_ERROR("[SamGenResultType] Got INVALID package ptr!!!");
       return {};
     }
     return std::move(sam_package->mask);

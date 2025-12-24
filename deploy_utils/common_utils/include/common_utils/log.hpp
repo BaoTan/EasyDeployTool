@@ -98,16 +98,16 @@ inline void FormatMsg(char *buf, size_t buflen, const char *fmt, ...)
   } while (0)
 #endif
 
-#define LOG_INFO(fmt, ...) EasyDeployLog(info, fmt, ##__VA_ARGS__)
-#define LOG_WARN(fmt, ...) EasyDeployLog(warn, fmt, ##__VA_ARGS__)
-#define LOG_ERROR(fmt, ...) EasyDeployLog(error, fmt, ##__VA_ARGS__)
+#define DP_LOG_INFO(fmt, ...) EasyDeployLog(info, fmt, ##__VA_ARGS__)
+#define DP_LOG_WARN(fmt, ...) EasyDeployLog(warn, fmt, ##__VA_ARGS__)
+#define DP_LOG_ERROR(fmt, ...) EasyDeployLog(error, fmt, ##__VA_ARGS__)
 
 // some macro
 #define CHECK_STATE(state, fmt, ...) \
   {                                  \
     if (!(state))                    \
     {                                \
-      LOG_ERROR(fmt, ##__VA_ARGS__); \
+      DP_LOG_ERROR(fmt, ##__VA_ARGS__); \
       return false;                  \
     }                                \
   }
@@ -116,7 +116,7 @@ inline void FormatMsg(char *buf, size_t buflen, const char *fmt, ...)
   {                                                      \
     if (!(state))                                        \
     {                                                    \
-      LOG_ERROR(fmt, ##__VA_ARGS__);                     \
+      DP_LOG_ERROR(fmt, ##__VA_ARGS__);                     \
       char _msg[1024];                                   \
       FormatMsg(_msg, sizeof(_msg), fmt, ##__VA_ARGS__); \
       throw std::runtime_error(_msg);                    \

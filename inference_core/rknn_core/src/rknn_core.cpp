@@ -152,13 +152,13 @@ RknnInferCore::~RknnInferCore()
     auto ctx_value = bq_ctx_.Take();
     if (!ctx_value.has_value())
     {
-      LOG_ERROR("[rknn_core] Failed to get ctx from block queue!!!");
+      DP_LOG_ERROR("[rknn_core] Failed to get ctx from block queue!!!");
       continue;
     }
     auto ctx = ctx_value.value();
     if (rknn_destroy(ctx) != RKNN_SUCC)
     {
-      LOG_ERROR("[rknn_core] In deconstructor destroy rknn ctx failed!!!");
+      DP_LOG_ERROR("[rknn_core] In deconstructor destroy rknn ctx failed!!!");
     }
   }
 }
@@ -239,7 +239,7 @@ void RknnInferCore::ResolveModelInformation(
 
     if (map_rknn_type2size_.find(blob_attr_input_[i].type) == map_rknn_type2size_.end())
     {
-      LOG_ERROR("[rknn_core] blob_name : %s, blob_type: %d, NOT found in `map_rknn_type2size_`!",
+      DP_LOG_ERROR("[rknn_core] blob_name : %s, blob_type: %d, NOT found in `map_rknn_type2size_`!",
                 s_blob_name.c_str(), blob_attr_input_[i].type);
       throw std::runtime_error("[rknn core] Failed to resolve model information!!!");
     }
@@ -333,7 +333,7 @@ bool RknnInferCore::PreProcess(std::shared_ptr<IPipelinePackage> pipeline_unit)
   {                                   \
     if (!(state))                     \
     {                                 \
-      LOG_ERROR((hint));              \
+      DP_LOG_ERROR((hint));              \
       bq_ctx_.BlockPush(index);       \
       return false;                   \
     }                                 \

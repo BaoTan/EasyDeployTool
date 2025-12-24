@@ -48,7 +48,7 @@ std::future<cv::Mat> BaseMonoStereoModel::ComputeDepthAsync(const cv::Mat &input
 {
   if (input_image.empty())
   {
-    LOG_ERROR("[BaseMonoStereoModel] `ComputeDepthAsync` Got invalid input images !!!");
+    DP_LOG_ERROR("[BaseMonoStereoModel] `ComputeDepthAsync` Got invalid input images !!!");
     return std::future<cv::Mat>();
   }
 
@@ -57,7 +57,7 @@ std::future<cv::Mat> BaseMonoStereoModel::ComputeDepthAsync(const cv::Mat &input
   package->infer_buffer     = inference_core_->GetBuffer(true);
   if (package->infer_buffer == nullptr)
   {
-    LOG_ERROR(
+    DP_LOG_ERROR(
         "[BaseMonoStereoModel] `ComputeDepthAsync` Got invalid inference core buffer ptr !!!");
     return std::future<cv::Mat>();
   }

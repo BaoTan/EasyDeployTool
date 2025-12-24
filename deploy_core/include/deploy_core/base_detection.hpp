@@ -86,7 +86,7 @@ public:
     auto detection_package = std::dynamic_pointer_cast<DetectionPipelinePackage>(package);
     if (detection_package == nullptr)
     {
-      LOG_ERROR("[DetectionGenResult] Got INVALID package ptr!!!");
+      DP_LOG_ERROR("[DetectionGenResult] Got INVALID package ptr!!!");
       return {};
     }
     return std::move(detection_package->results);
