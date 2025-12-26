@@ -1,7 +1,6 @@
 #include "ort_core/ort_core.hpp"
-
 #include "ort_blob_buffer.hpp"
-
+#include <map>
 namespace easy_deploy {
 
 enum BlobType { kINPUT = 0, kOUTPUT = 1 };
@@ -20,7 +19,8 @@ public:
   OrtInferCore(const std::string                                             onnx_path,
                const std::unordered_map<std::string, std::vector<uint64_t>> &input_blobs_shape,
                const std::unordered_map<std::string, std::vector<uint64_t>> &output_blobs_shape,
-               const int                                                     num_threads = 0);
+               const int                                                     num_threads    = 0,
+               const int                                                     ort_infer_type = 0);
 
   OrtInferCore(const std::string onnx_path, const int num_threads = 0);
 
@@ -62,7 +62,8 @@ OrtInferCore::OrtInferCore(
     const std::string                                             onnx_path,
     const std::unordered_map<std::string, std::vector<uint64_t>> &input_blobs_shape,
     const std::unordered_map<std::string, std::vector<uint64_t>> &output_blobs_shape,
-    const int                                                     num_threads)
+    const int                                                     num_threads,
+    const int                                                     ort_infer_type)
 {
   // onnxruntime session initialization
   LOG_DEBUG("start initializing onnxruntime session with onnx model {%s} ...", onnx_path.c_str());
@@ -71,6 +72,42 @@ OrtInferCore::OrtInferCore(
   session_options.SetIntraOpNumThreads(num_threads);
   session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
   session_options.SetLogSeverityLevel(4);
+
+  // 配置执行提供器，不设置的话默认使用CPU
+  /* CUDA Provider */
+  if (ort_infer_type == 1)
+  {
+    OrtCUDAProviderOptions cuda_options;
+    cuda_options.device_id = 0;
+    session_options.AppendExecutionProvider_CUDA(cuda_options); // 添加CUDA执行提供器
+  } else if (ort_infer_type == 2)
+  {
+    /* TensorRT Provider Options */
+    std::map<std::string, std::string> trt_options;
+    trt_options["device_id"]               = std::to_string(0);
+    trt_options["trt_engine_cache_enable"] = "1";
+    trt_options["trt_engine_cache_path"] =
+        "/home/paco/work_prjs/my_tb_works/hjzl_3dr/assets/models";
+    trt_options["trt_fp16_enable"]        = "1";
+    trt_options["trt_int8_enable"]        = "0";
+    trt_options["trt_max_workspace_size"] = std::to_string(8ULL * 1024 * 1024 * 1024);
+    std::vector<const char *> keys;
+    std::vector<const char *> values;
+    for (const auto &[key, value] : trt_options)
+    {
+      keys.push_back(key.c_str());
+      values.push_back(value.c_str());
+    }
+    OrtTensorRTProviderOptionsV2 *trt_options_v2 = nullptr;
+    OrtApi const                 *api            = OrtGetApiBase()->GetApi(ORT_API_VERSION);
+    api->CreateTensorRTProviderOptions(&trt_options_v2);
+    Ort::ThrowOnError(api->UpdateTensorRTProviderOptions(trt_options_v2, keys.data(), values.data(),
+                                                         keys.size()));
+    session_options.AppendExecutionProvider_TensorRT_V2(*trt_options_v2); // 添加TensorRT执行提供器
+    api->ReleaseTensorRTProviderOptions(trt_options_v2);
+  }
+
+  // 加载模型
   ort_session_ = std::make_shared<Ort::Session>(*ort_env_, onnx_path.c_str(), session_options);
   LOG_DEBUG("successfully created onnxruntime session!");
 
@@ -310,10 +347,11 @@ std::shared_ptr<BaseInferCore> CreateOrtInferCore(
     const std::string                                             onnx_path,
     const std::unordered_map<std::string, std::vector<uint64_t>> &input_blobs_shape,
     const std::unordered_map<std::string, std::vector<uint64_t>> &output_blobs_shape,
-    const int                                                     num_threads)
+    const int                                                     num_threads,
+    const int                                                     ort_infer_type)
 {
   return std::make_shared<OrtInferCore>(onnx_path, input_blobs_shape, output_blobs_shape,
-                                        num_threads);
+                                        num_threads, ort_infer_type);
 }
 
 } // namespace easy_deploy
