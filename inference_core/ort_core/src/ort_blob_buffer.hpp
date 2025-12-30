@@ -2,7 +2,11 @@
 
 #include <assert.h>
 #include <string.h>
+#ifndef WINDOWS
 #include <onnxruntime_cxx_api.h>
+#else
+#include <onnxruntime_c_api.h>
+#endif
 #include "deploy_core/blob_buffer.hpp"
 
 namespace easy_deploy {

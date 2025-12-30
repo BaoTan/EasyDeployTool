@@ -1,2 +1,4 @@
 build
 .vscode
+lib
+lib_win

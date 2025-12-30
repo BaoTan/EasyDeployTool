@@ -5,7 +5,9 @@ add_compile_options(-std=c++17)
 add_compile_options(-O3 -Wextra -Wdeprecated -fPIC)
 set(CMAKE_CXX_STANDARD 17)
 
+# find libs 
 find_package(OpenCV REQUIRED)
+message("Deploy OpenCV_INCLUDE_DIRS = ${OpenCV_INCLUDE_DIRS}")
 
 include_directories(
   include
@@ -19,15 +21,17 @@ set(source_file src/base_infer_core.cpp
                 src/base_mono_stereo.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${source_file})
-
-
+# create lib
+set(LIBRARY_OUTPUT_PATH ${DEPLOY_LIB_PATH})
+add_library(${PROJECT_NAME} ${DEPLOY_LIB_TYPE} ${source_file})
 target_link_libraries(${PROJECT_NAME} PUBLIC
   ${OpenCV_LIBS}
   common_utils
 )
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
+# install
 install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+

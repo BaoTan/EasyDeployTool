@@ -5,13 +5,18 @@ add_compile_options(-std=c++17)
 add_compile_options(-O3 -Wextra -Wdeprecated -fPIC)
 set(CMAKE_CXX_STANDARD 17)
 
-
+# find libs
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-  # ONNXRUNTIME lib
+  ## linux x86_64 onnxruntime lib
   MESSAGE(STATUS "Building OnnxRuntime-Core on x86_64 platform ...")
-  SET(ONNX_ROOT_PATH /home/paco/work_envs/dl_env/onnxruntime-linux-x64-gpu-1.16.1)
-  SET(ONNXRUNTIME_INCLUDE_DIRS ${ONNX_ROOT_PATH}/include)
-  FILE(GLOB ONNXRUNTIME_LIBS ${ONNX_ROOT_PATH}/lib/*.so)
+  if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+      SET(ONNX_ROOT_PATH /home/paco/work_envs/dl_env/onnxruntime-linux-x64-gpu-1.16.1)
+      SET(ONNXRUNTIME_INCLUDE_DIRS ${ONNX_ROOT_PATH}/include)
+      FILE(GLOB ONNXRUNTIME_LIBS ${ONNX_ROOT_PATH}/lib/*.so)
+  elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
+      SET(ONNX_ROOT_PATH /home/paco/work_envs/dl_env/onnxruntime-win-x64-gpu-1.16.1)
+      SET(ONNXRUNTIME_INCLUDE_DIRS ${ONNX_ROOT_PATH}/include)
+  endif ()
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
   message(STATUS "Building OnnxRuntime-Core on aarch64 platform ...")
   set(ONNXRUNTIME_INCLUDE_DIRS onnxruntime-pkg-aarch64/include)
@@ -23,6 +28,30 @@ endif()
 
 message(ONNXRUNTIME_INCLUDE_DIRS = ${ONNXRUNTIME_INCLUDE_DIRS})
 
+# create mingw onnxruntime lib
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  ## 主 ONNX Runtime
+  add_library(onnxruntime ${DEPLOY_LIB_TYPE} IMPORTED)
+  set_target_properties(onnxruntime PROPERTIES
+    IMPORTED_LOCATION "${ONNX_ROOT_PATH}/lib/onnxruntime.dll"
+    IMPORTED_IMPLIB   "${ONNX_ROOT_PATH}/lib/libonnxruntime.a"
+  )
+  target_include_directories(onnxruntime INTERFACE
+      "${ONNX_ROOT_PATH}/include"
+  )
+
+  ## CUDA Provider
+  add_library(onnxruntime_providers_cuda ${DEPLOY_LIB_TYPE} IMPORTED)
+  set_target_properties(onnxruntime_providers_cuda PROPERTIES
+      IMPORTED_LOCATION "${ONNX_ROOT_PATH}/lib/onnxruntime_providers_cuda.dll"
+      IMPORTED_IMPLIB   "${ONNX_ROOT_PATH}/lib/libonnxruntime_providers_cuda.a"
+  )
+  ### CUDA provider 依赖主库
+  target_link_libraries(onnxruntime_providers_cuda INTERFACE onnxruntime)
+endif()
+
+# create lib
+set(LIBRARY_OUTPUT_PATH ${DEPLOY_LIB_PATH})
 set(source_file
   src/ort_core.cpp
   src/ort_core_factory.cpp
@@ -33,14 +62,25 @@ include_directories(
   ${ONNXRUNTIME_INCLUDE_DIRS}
 )
 
-add_library(${PROJECT_NAME} SHARED ${source_file})
+add_library(${PROJECT_NAME} ${DEPLOY_LIB_TYPE} ${source_file})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  ${ONNXRUNTIME_LIBS}
-  deploy_core
-)
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+  target_link_libraries(${PROJECT_NAME} PUBLIC
+    ${ONNXRUNTIME_LIBS}
+    deploy_core
+  )
+elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  target_link_libraries(${PROJECT_NAME} PUBLIC
+    onnxruntime
+    onnxruntime_providers_cuda
+    deploy_core
+  )
+endif ()
 
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
+# install
 install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
