@@ -6,7 +6,7 @@ add_compile_options(-O3 -Wextra -Wdeprecated -fPIC)
 set(CMAKE_CXX_STANDARD 17)
 
 # find libs
-if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64")
   ## linux x86_64 onnxruntime lib
   MESSAGE(STATUS "Building OnnxRuntime-Core on x86_64 platform ...")
   if (CMAKE_SYSTEM_NAME MATCHES "Linux")
