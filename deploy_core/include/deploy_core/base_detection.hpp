@@ -4,7 +4,7 @@
 #include <functional>
 #include <thread>
 #include <vector>
-
+#include <iostream>
 #include <opencv2/opencv.hpp>
 
 #include "deploy_core/async_pipeline.hpp"
@@ -12,7 +12,9 @@
 #include "common_utils/pipeline_image.hpp"
 
 namespace easy_deploy {
-
+#ifdef _MSC_VER // _MSC_VER 是 MSVC 的编译器标识
+typedef unsigned char u_char;
+#endif
 /**
  * @brief The common detection_2d pipeline package wrapper.
  *

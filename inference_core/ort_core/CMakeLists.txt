@@ -26,7 +26,7 @@ else()
                       Supported architectures are x86_64 and aarch64.")
 endif()
 
-message(ONNXRUNTIME_INCLUDE_DIRS = ${ONNXRUNTIME_INCLUDE_DIRS})
+message("\n******ONNXRUNTIME_INCLUDE_DIRS = ${ONNXRUNTIME_INCLUDE_DIRS}")
 
 # create mingw onnxruntime lib
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
