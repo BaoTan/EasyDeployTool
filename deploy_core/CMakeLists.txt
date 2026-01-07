@@ -3,7 +3,7 @@ project(deploy_core)
 
 add_compile_options(-std=c++17)
 if(MSVC)
-	add_compile_options(-O3 -Wdeprecated -fPIC)
+	add_compile_options(-O3 -fPIC)
 else()
   add_compile_options(-O3 -Wextra -Wdeprecated -fPIC)
 endif()
