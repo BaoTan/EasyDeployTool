@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 3.8)
 project(deploy_core)
 
 add_compile_options(-std=c++17)
-add_compile_options(-O3 -Wextra -Wdeprecated -fPIC)
+if(MSVC)
+	add_compile_options(-O3 -Wdeprecated -fPIC)
+else()
+  add_compile_options(-O3 -Wextra -Wdeprecated -fPIC)
+endif()
+
+
 set(CMAKE_CXX_STANDARD 17)
 
 # find libs 
