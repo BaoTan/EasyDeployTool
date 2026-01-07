@@ -58,6 +58,20 @@ private:
   std::unordered_map<std::string, std::vector<uint64_t>> map_output_blob_name2shape_;
 };
 
+#ifdef _WIN32
+#include <windows.h>
+inline std::wstring to_ort_path(const std::string &path)
+{
+  // Windows 下 ORTCHAR_T = wchar_t
+  if (path.empty())
+    return std::wstring();
+  int size_needed = MultiByteToWideChar(CP_UTF8, 0, path.c_str(), (int)path.size(), nullptr, 0);
+  std::wstring wstr(size_needed, 0);
+  MultiByteToWideChar(CP_UTF8, 0, path.c_str(), (int)path.size(), &wstr[0], size_needed);
+  return wstr;
+}
+#endif
+
 OrtInferCore::OrtInferCore(
     const std::string                                             onnx_path,
     const std::unordered_map<std::string, std::vector<uint64_t>> &input_blobs_shape,
@@ -108,7 +122,13 @@ OrtInferCore::OrtInferCore(
   }
 
   // 加载模型
+#ifdef _WIN32
+  std::wstring onnx_path_w = to_ort_path(onnx_path);
+  ort_session_ = std::make_shared<Ort::Session>(*ort_env_, onnx_path_w.c_str(), session_options);
+#else
   ort_session_ = std::make_shared<Ort::Session>(*ort_env_, onnx_path.c_str(), session_options);
+#endif
+  
   LOG_DEBUG("successfully created onnxruntime session!");
 
   map_input_blob_name2shape_ =

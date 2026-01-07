@@ -38,7 +38,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
   add_library(onnxruntime ${DEPLOY_LIB_TYPE} IMPORTED)
   set_target_properties(onnxruntime PROPERTIES
     IMPORTED_LOCATION "${ONNX_ROOT_PATH}/lib/onnxruntime.dll"
-    IMPORTED_IMPLIB   "${ONNX_ROOT_PATH}/lib/libonnxruntime.lib"
+    IMPORTED_IMPLIB   "${ONNX_ROOT_PATH}/lib/onnxruntime.lib"
     INTERFACE_INCLUDE_DIRECTORIES "${ONNXRUNTIME_INCLUDE_DIRS}"
   )
   target_include_directories(onnxruntime INTERFACE
