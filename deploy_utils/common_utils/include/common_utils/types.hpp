@@ -1,7 +1,9 @@
 #pragma once
 
 namespace easy_deploy {
-
+#ifdef _MSC_VER // _MSC_VER 是 MSVC 的编译器标识
+typedef unsigned char u_char;
+#endif
 /**
  * @brief Defination of common 2D bounding box
  *

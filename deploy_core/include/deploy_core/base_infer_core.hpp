@@ -4,7 +4,8 @@
 #include <thread>
 #include <vector>
 #include <unordered_set>
-
+#include <string>
+#include <iostream>
 #include "common_utils/block_queue.hpp"
 #include "common_utils/log.hpp"
 #include "deploy_core/async_pipeline.hpp"
