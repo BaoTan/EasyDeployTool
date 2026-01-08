@@ -31,7 +31,6 @@ if(ENABLE_TENSORRT)
 endif()
 
 # create lib
-set(LIBRARY_OUTPUT_PATH ${DEPLOY_LIB_PATH})
 include_directories(
   include
   ${OpenCV_INCLUDE_DIRS}
@@ -45,6 +44,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+if(MSVC)
+	set_target_properties(${PROJECT_NAME} PROPERTIES
+		WINDOWS_EXPORT_ALL_SYMBOLS ON
+	)
+endif()
 
 # install
 install(TARGETS ${PROJECT_NAME}

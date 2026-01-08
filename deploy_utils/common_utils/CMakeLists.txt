@@ -6,7 +6,6 @@ add_compile_options(-O3)
 set(CMAKE_CXX_STANDARD 17)
 
 # create lib
-set(LIBRARY_OUTPUT_PATH ${DEPLOY_LIB_PATH})
 set(source_file
   src/log.cpp
 )
@@ -19,6 +18,13 @@ add_library(${PROJECT_NAME} ${DEPLOY_LIB_TYPE} ${source_file})
 target_link_libraries(${PROJECT_NAME} PUBLIC
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
+if(MSVC)
+	set_target_properties(${PROJECT_NAME} PROPERTIES
+		WINDOWS_EXPORT_ALL_SYMBOLS ON
+	)
+endif()
+
 if (ENABLE_DEBUG_OUTPUT)
   target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_DEBUG_OUTPUT)
 endif()

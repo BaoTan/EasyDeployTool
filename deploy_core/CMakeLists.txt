@@ -28,14 +28,17 @@ set(source_file src/base_infer_core.cpp
 )
 
 # create lib
-set(LIBRARY_OUTPUT_PATH ${DEPLOY_LIB_PATH})
 add_library(${PROJECT_NAME} ${DEPLOY_LIB_TYPE} ${source_file})
 target_link_libraries(${PROJECT_NAME} PUBLIC
   ${OpenCV_LIBS}
   common_utils
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
-
+if(MSVC)
+	set_target_properties(${PROJECT_NAME} PROPERTIES
+		WINDOWS_EXPORT_ALL_SYMBOLS ON
+	)
+endif()
 # install
 install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib)

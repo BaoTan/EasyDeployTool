@@ -47,7 +47,6 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 # create lib
-set(LIBRARY_OUTPUT_PATH ${DEPLOY_LIB_PATH})
 set(source_file
   src/ort_core.cpp
   src/ort_core_factory.cpp
@@ -73,7 +72,11 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif ()
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
-
+if(MSVC)
+	set_target_properties(${PROJECT_NAME} PROPERTIES
+		WINDOWS_EXPORT_ALL_SYMBOLS ON
+	)
+endif()
 # install
 install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION lib)
