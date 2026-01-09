@@ -81,7 +81,7 @@ OrtInferCore::OrtInferCore(
 {
   // onnxruntime session initialization
   LOG_DEBUG("start initializing onnxruntime session with onnx model {%s} ...", onnx_path.c_str());
-  ort_env_ = std::make_shared<Ort::Env>(ORT_LOGGING_LEVEL_ERROR, onnx_path.data());
+  ort_env_ = std::make_shared<Ort::Env>(ORT_LOGGING_LEVEL_ERROR, "OrtInferCore");
   Ort::SessionOptions session_options;
   session_options.SetIntraOpNumThreads(num_threads);
   session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
@@ -122,12 +122,20 @@ OrtInferCore::OrtInferCore(
   }
 
   // 加载模型
+  try
+  {
 #ifdef _WIN32
-  std::wstring onnx_path_w = to_ort_path(onnx_path);
-  ort_session_ = std::make_shared<Ort::Session>(*ort_env_, onnx_path_w.c_str(), session_options);
+    std::wstring onnx_path_w = to_ort_path(onnx_path);
+    ort_session_ = std::make_shared<Ort::Session>(*ort_env_, onnx_path_w.c_str(), session_options);
 #else
-  ort_session_ = std::make_shared<Ort::Session>(*ort_env_, onnx_path.c_str(), session_options);
+    ort_session_ = std::make_shared<Ort::Session>(*ort_env_, onnx_path.c_str(), session_options);
 #endif
+  } catch (const Ort::Exception &e)
+  {
+    std::cerr << "[ONNX Runtime ERROR]\n"
+              << e.what() << "\nErrorCode = " << e.GetOrtErrorCode() << std::endl;
+    throw;
+  }
   
   LOG_DEBUG("successfully created onnxruntime session!");
 
