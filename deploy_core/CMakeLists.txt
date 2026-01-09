@@ -3,7 +3,7 @@ project(deploy_core)
 
 add_compile_options(-std=c++17)
 if(MSVC)
-	add_compile_options(-O3 -fPIC)
+  add_compile_options(-O3 -fPIC)
 else()
   add_compile_options(-O3 -Wextra -Wdeprecated -fPIC)
 endif()
@@ -42,6 +42,7 @@ endif()
 
 # install
 install(TARGETS ${PROJECT_NAME}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
   LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
   ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
 )
