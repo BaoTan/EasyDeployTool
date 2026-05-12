@@ -80,7 +80,7 @@ OrtInferCore::OrtInferCore(
     const int                                                     ort_infer_type)
 {
   // onnxruntime session initialization
-  LOG_DEBUG("start initializing onnxruntime session with onnx model {%s} ...", onnx_path.c_str());
+  DP_LOG_DEBUG("start initializing onnxruntime session with onnx model {%s} ...", onnx_path.c_str());
   ort_env_ = std::make_shared<Ort::Env>(ORT_LOGGING_LEVEL_ERROR, "OrtInferCore");
   Ort::SessionOptions session_options;
   session_options.SetIntraOpNumThreads(num_threads);
@@ -137,7 +137,7 @@ OrtInferCore::OrtInferCore(
     throw;
   }
   
-  LOG_DEBUG("successfully created onnxruntime session!");
+  DP_LOG_DEBUG("successfully created onnxruntime session!");
 
   map_input_blob_name2shape_ =
       input_blobs_shape.empty() ? ResolveModelInputInformation() : input_blobs_shape;
@@ -154,7 +154,7 @@ OrtInferCore::OrtInferCore(
           {
             s_blob_shape += std::to_string(dim) + "\t";
           }
-          LOG_DEBUG("blob name : %s, blob shape : %s", p_name_shape.first.c_str(),
+          DP_LOG_DEBUG("blob name : %s, blob shape : %s", p_name_shape.first.c_str(),
                     s_blob_shape.c_str());
         }
       };
@@ -199,7 +199,7 @@ std::unordered_map<std::string, std::vector<uint64_t>> OrtInferCore::ResolveMode
       ret[s_blob_name].push_back(blob_shape[i]);
     }
     s_blob_info += "\ttotal elements: " + std::to_string(blob_element_size);
-    LOG_DEBUG(s_blob_info.c_str());
+    DP_LOG_DEBUG(s_blob_info.c_str());
   }
 
   return ret;
@@ -239,7 +239,7 @@ std::unordered_map<std::string, std::vector<uint64_t>> OrtInferCore::ResolveMode
       ret[s_blob_name].push_back(blob_shape[i]);
     }
     s_blob_info += "\ttotal elements: " + std::to_string(blob_element_size);
-    LOG_DEBUG(s_blob_info.c_str());
+    DP_LOG_DEBUG(s_blob_info.c_str());
   }
 
   return ret;

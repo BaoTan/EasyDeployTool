@@ -170,7 +170,7 @@ public:
     // 1. for `n` blocks, construct `n+1` block queues
     const auto blocks = inner_context_.blocks_;
     const int  n      = blocks.size();
-    LOG_DEBUG("[AsyncPipelineInstance] Total {%d} Pipeline Blocks", n);
+    DP_LOG_DEBUG("[AsyncPipelineInstance] Total {%d} Pipeline Blocks", n);
     for (int i = 0; i < n + 1; ++i)
     {
       block_queue_.emplace_back(std::make_shared<BlockQueue<InnerParsingType>>(bq_max_size));
@@ -194,21 +194,21 @@ public:
   {
     if (pipeline_initialized_)
     {
-      LOG_DEBUG("[AsyncPipelineInstance] Closing pipeline ...");
+      DP_LOG_DEBUG("[AsyncPipelineInstance] Closing pipeline ...");
       for (const auto &bq : block_queue_)
       {
         bq->DisableAndClear();
       }
-      LOG_DEBUG("[AsyncPipelineInstance] Disabled all block queue ...");
+      DP_LOG_DEBUG("[AsyncPipelineInstance] Disabled all block queue ...");
       pipeline_close_flag_.store(true);
 
       for (auto &future : async_futures_)
       {
         auto res = future.get();
       }
-      LOG_DEBUG("[AsyncPipelineInstance] Join all block queue ...");
+      DP_LOG_DEBUG("[AsyncPipelineInstance] Join all block queue ...");
       block_queue_.clear();
-      LOG_DEBUG("[AsyncPipelineInstance] Async pipeline is released successfully!!");
+      DP_LOG_DEBUG("[AsyncPipelineInstance] Async pipeline is released successfully!!");
       pipeline_initialized_ = false;
       pipeline_close_flag_.store(true);
       pipeline_no_more_input_.store(true);
@@ -248,7 +248,7 @@ private:
                          std::shared_ptr<BlockQueue<InnerParsingType>> bq_output,
                          const InnerBlock_t                           &pipeline_block)
   {
-    LOG_DEBUG("[AsyncPipelineInstance] {%s} thread start!", pipeline_block.GetName().c_str());
+    DP_LOG_DEBUG("[AsyncPipelineInstance] {%s} thread start!", pipeline_block.GetName().c_str());
     while (!pipeline_close_flag_)
     {
       auto data = bq_input->Take();
@@ -256,7 +256,7 @@ private:
       {
         if (pipeline_no_more_input_)
         {
-          LOG_DEBUG("[AsyncPipelineInstance] {%s} set no more output ...",
+          DP_LOG_DEBUG("[AsyncPipelineInstance] {%s} set no more output ...",
                     pipeline_block.GetName().c_str());
           bq_output->SetNoMoreInput();
           break;
@@ -271,7 +271,7 @@ private:
         auto start = std::chrono::high_resolution_clock::now();
         pipeline_block(data.value());
         auto end = std::chrono::high_resolution_clock::now();
-        LOG_DEBUG("[AsyncPipelineInstance] Block name: {%s}, cost(us): %ld",
+        DP_LOG_DEBUG("[AsyncPipelineInstance] Block name: {%s}, cost(us): %ld",
                   pipeline_block.GetName().c_str(),
                   std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
       } catch (const std::exception &e)
@@ -285,13 +285,13 @@ private:
 
       bq_output->BlockPush(data.value());
     }
-    LOG_DEBUG("[AsyncPipelineInstance] {%s} thread quit!", pipeline_block.GetName().c_str());
+    DP_LOG_DEBUG("[AsyncPipelineInstance] {%s} thread quit!", pipeline_block.GetName().c_str());
     return true;
   }
 
   bool ThreadOutputEntry(std::shared_ptr<BlockQueue<InnerParsingType>> bq_input)
   {
-    LOG_DEBUG("[AsyncPipelineInstance] {Output} thread start!");
+    DP_LOG_DEBUG("[AsyncPipelineInstance] {Output} thread start!");
     while (!pipeline_close_flag_)
     {
       auto data = bq_input->Take();
@@ -299,7 +299,7 @@ private:
       {
         if (pipeline_no_more_input_)
         {
-          LOG_DEBUG("[AsyncPipelineInstance] {Output} set no more output ...");
+          DP_LOG_DEBUG("[AsyncPipelineInstance] {Output} set no more output ...");
           break;
         } else
         {
@@ -316,7 +316,7 @@ private:
             "[AsyncPipelineInstance] {Output} package without valid callback will be dropped!!!");
       }
     }
-    LOG_DEBUG("[AsyncPipelineInstance] {Output} thread quit!");
+    DP_LOG_DEBUG("[AsyncPipelineInstance] {Output} thread quit!");
 
     return true;
   }

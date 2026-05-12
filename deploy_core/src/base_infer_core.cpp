@@ -52,7 +52,7 @@ void BaseInferCore::Init(size_t mem_buf_size)
                                 std::to_string(mem_buf_size));
   }
   mem_buf_pool_ = std::make_unique<MemBufferPool>(this, mem_buf_size);
-  LOG_DEBUG("successfully init mem buf pool with pool_size : %ld", mem_buf_size);
+  DP_LOG_DEBUG("successfully init mem buf pool with pool_size : %ld", mem_buf_size);
 }
 
 BaseInferCore::~BaseInferCore()

@@ -92,9 +92,9 @@ inline void FormatMsg(char *buf, size_t buflen, const char *fmt, ...)
   } while (0)
 
 #ifdef ENABLE_DEBUG_OUTPUT
-#define LOG_DEBUG(fmt, ...) EasyDeployLog(debug, fmt, ##__VA_ARGS__)
+#define DP_LOG_DEBUG(fmt, ...) EasyDeployLog(debug, fmt, ##__VA_ARGS__)
 #else
-#define LOG_DEBUG(fmt, ...) \
+#define DP_LOG_DEBUG(fmt, ...) \
   do                        \
   {                         \
   } while (0)
@@ -130,7 +130,7 @@ inline void FormatMsg(char *buf, size_t buflen, const char *fmt, ...)
     auto start = std::chrono::high_resolution_clock::now();                                \
     (run);                                                                                 \
     auto end = std::chrono::high_resolution_clock::now();                                  \
-    LOG_DEBUG("%s cost(us): %ld", #run,                                                    \
+    DP_LOG_DEBUG("%s cost(us): %ld", #run,                                                    \
               std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()); \
   }
 
@@ -139,7 +139,7 @@ inline void FormatMsg(char *buf, size_t buflen, const char *fmt, ...)
     auto start = std::chrono::high_resolution_clock::now();                                \
     CHECK_STATE((run), fmt, ##__VA_ARGS__);                                                \
     auto end = std::chrono::high_resolution_clock::now();                                  \
-    LOG_DEBUG("%s cost(us): %ld", #run,                                                    \
+    DP_LOG_DEBUG("%s cost(us): %ld", #run,                                                    \
               std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()); \
   }
 

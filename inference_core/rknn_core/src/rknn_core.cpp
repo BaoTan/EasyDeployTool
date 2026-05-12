@@ -96,7 +96,7 @@ RknnInferCore::RknnInferCore(
   {
     throw std::runtime_error("[rknn_core] Failed to read model from file: " + model_path);
   }
-  LOG_DEBUG("[rknn core] initilize using {%d} ctx instances", parallel_ctx_num);
+  DP_LOG_DEBUG("[rknn core] initilize using {%d} ctx instances", parallel_ctx_num);
 
   for (int i = 0; i < parallel_ctx_num; ++i)
   {
@@ -212,7 +212,7 @@ void RknnInferCore::ResolveModelInformation(
   {
     throw std::runtime_error("[rknn core] Failed to execute in_out_num `rknn_query`");
   }
-  LOG_DEBUG("model input blob num: %ld \toutput blob num: %ld", rknn_io_num.n_input,
+  DP_LOG_DEBUG("model input blob num: %ld \toutput blob num: %ld", rknn_io_num.n_input,
             rknn_io_num.n_output);
 
   blob_input_number_  = rknn_io_num.n_input;
@@ -252,8 +252,8 @@ void RknnInferCore::ResolveModelInformation(
       s_blob_info += "\t" + std::to_string(blob_attr_input_[i].dims[j]);
       blob_shape.push_back(blob_attr_input_[i].dims[j]);
     }
-    LOG_DEBUG(s_blob_info.c_str());
-    LOG_DEBUG("blob fmt: %s, type: %s", get_format_string(blob_attr_input_[i].fmt),
+    DP_LOG_DEBUG(s_blob_info.c_str());
+    DP_LOG_DEBUG("blob fmt: %s, type: %s", get_format_string(blob_attr_input_[i].fmt),
               get_type_string(blob_attr_input_[i].type));
     map_input_blob_name2shape_[s_blob_name] = blob_shape;
   }
@@ -275,8 +275,8 @@ void RknnInferCore::ResolveModelInformation(
       s_blob_info += "\t" + std::to_string(blob_attr_output_[i].dims[j]);
       blob_shape.push_back(blob_attr_output_[i].dims[j]);
     }
-    LOG_DEBUG(s_blob_info.c_str());
-    LOG_DEBUG("blob fmt: %s, type: %s", get_format_string(blob_attr_output_[i].fmt),
+    DP_LOG_DEBUG(s_blob_info.c_str());
+    DP_LOG_DEBUG("blob fmt: %s, type: %s", get_format_string(blob_attr_output_[i].fmt),
               get_type_string(blob_attr_output_[i].type));
     map_output_blob_name2shape_[s_blob_name] = blob_shape;
   }

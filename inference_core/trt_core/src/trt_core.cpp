@@ -21,7 +21,7 @@ public:
   void log(Severity severity, const char *msg) noexcept override
   {
     if (severity == Severity::kINFO)
-      LOG_DEBUG("[Tensorrt] : %s", msg);
+      DP_LOG_DEBUG("[Tensorrt] : %s", msg);
     else if (severity == Severity::kERROR)
       DP_LOG_ERROR("[Tensorrt] : %s", msg);
     else if (severity == Severity::kWARNING)
@@ -213,14 +213,14 @@ void TrtInferCore::LoadEngine(const std::string &engine_path)
   {
     throw std::runtime_error("[TrtInferCore] Failed to create trt engine!!!");
   }
-  LOG_DEBUG("[TrtInferCore] created tensorrt engine and context ! ");
+  DP_LOG_DEBUG("[TrtInferCore] created tensorrt engine and context ! ");
 }
 
 void TrtInferCore::ResolveModelInformation(
     std::unordered_map<std::string, std::vector<uint64_t>> &blobs_shape)
 {
   const int blob_number = engine_->getNbIOTensors();
-  LOG_DEBUG("[TrtInferCore] model has {%d} blobs", blob_number);
+  DP_LOG_DEBUG("[TrtInferCore] model has {%d} blobs", blob_number);
 
   bool resolve_blob_shape = blobs_shape.empty();
 
@@ -250,7 +250,7 @@ void TrtInferCore::ResolveModelInformation(
       {
         s_dim += std::to_string(d) + " ";
       }
-      LOG_DEBUG("[TrtInferCore] blob name : %s, dims : %s", blob_name, s_dim.c_str());
+      DP_LOG_DEBUG("[TrtInferCore] blob name : %s, dims : %s", blob_name, s_dim.c_str());
     }
   }
 }
